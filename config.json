@@ -1,0 +1,9 @@
+{
+    "daily": true,
+    "task": true,
+    "farm": true,
+    "game": true,
+    "proxy": false,
+    "delay_loop": 3000,
+    "delay_account_switch": 10
+}  
