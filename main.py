@@ -511,9 +511,9 @@ if __name__ == "__main__":
         fin.log(f"👤 [ACCOUNT] Processing account {index + 1}/{max_index}: {display_account}", Fore.YELLOW)
 
         if config.get("proxy", False):
-            fishing.override_requests()
+            fin.override_requests()
         else:
-            fishing.log("[CONFIG] Proxy: ❌ Disabled", Fore.RED)
+            fin.log("[CONFIG] Proxy: ❌ Disabled", Fore.RED)
 
         fin.login(index)
 
