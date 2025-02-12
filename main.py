@@ -27,6 +27,7 @@ class fintopia:
         self.query_list = self.load_query("query.txt")
         self.token = None
         self.coins = 0
+        self.config = self.load_config()
 
     def banner(self) -> None:
         """Displays the banner for the bot."""
@@ -309,19 +310,16 @@ class fintopia:
             headers = {**self.HEADERS, "Authorization": f"Bearer {self.token}"}
             
             try:
-                # Step 1: Ambil informasi game diamond-breath
                 self.log("📡 Fetching diamond-breath game info...", Fore.CYAN)
                 get_response = requests.get(endpoint, headers=headers)
                 get_response.raise_for_status()
                 game_info = get_response.json()
                 self.log("🎮 Diamond-breath game info retrieved.", Fore.GREEN)
                 
-                # Step 2: Tunggu secara acak antara 13 sampai 15 detik
                 delay = random.randint(13, 15)
                 self.log(f"⏱️ Waiting for {delay} seconds before playing diamond-breath...", Fore.CYAN)
                 time.sleep(delay)
                 
-                # Step 3: Kirim request POST dengan payload {"seconds": delay}
                 payload = {"seconds": delay}
                 self.log("📡 Sending diamond-breath play request...", Fore.CYAN)
                 post_response = requests.post(endpoint, headers=headers, json=payload)
@@ -346,28 +344,23 @@ class fintopia:
             headers = {**self.HEADERS, "Authorization": f"Bearer {self.token}"}
             
             try:
-                # Step 1: Ambil state permainan clicker diamond
                 self.log("📡 Fetching clicker diamond state...", Fore.CYAN)
                 state_response = requests.get(state_endpoint, headers=headers)
                 state_response.raise_for_status()
                 state_data = state_response.json()
                 self.log("🎮 Diamond state fetched.", Fore.GREEN)
                 
-                # Tampilkan informasi singkat mengenai state dan jumlah klik
                 state_str = state_data.get("state", "unknown")
                 clicks = state_data.get("clicks", "N/A")
                 self.log(f"🆙 State: {state_str} | 👆 Clicks: {clicks}", Fore.GREEN)
                 
-                # Step 2: Tunggu delay acak antara 4 hingga 8 detik
                 delay = random.randint(4, 8)
                 self.log(f"⏱️ Waiting for {delay} seconds before completing tap...", Fore.CYAN)
                 time.sleep(delay)
                 
-                # Step 3: Kirim request POST untuk menyelesaikan tap game
                 self.log("📡 Sending tap complete request...", Fore.CYAN)
                 complete_response = requests.post(complete_endpoint, headers=headers)
                 complete_response.raise_for_status()
-                # Response diharapkan null, jadi kita cukup log bahwa tap telah selesai.
                 self.log("✅ Tap completed successfully!", Fore.GREEN)
                 
             except requests.exceptions.RequestException as e:
@@ -379,9 +372,84 @@ class fintopia:
             except Exception as e:
                 self.log(f"❌ Unexpected error in tap game: {e}", Fore.RED)
         
-        # Panggil kedua fungsi game: diamond_breath dan tap
+        def space_tappers() -> None:
+            """Plays the space tappers game."""
+            headers = {**self.HEADERS, "Authorization": f"Bearer {self.token}"}
+            
+            try:
+                # Step 1: Ambil pengaturan game space-tappers
+                settings_endpoint = f"{self.BASE_URL}hold/space-tappers/game-settings"
+                self.log("📡 Fetching space tappers game settings...", Fore.CYAN)
+                settings_response = requests.get(settings_endpoint, headers=headers)
+                settings_response.raise_for_status()
+                game_settings = settings_response.json()
+                self.log(f"🎮 Space tappers settings retrieved: {game_settings}", Fore.GREEN)
+                
+                # Ambil nilai maksimum score dari game settings
+                max_score = game_settings.get("maxScore", 57)
+                # Kurangi nilai max_score secara acak antara 10 hingga 100
+                reduction = random.randint(10, 50)
+                score = max_score - reduction
+                self.log(f"🎲 Calculated score: {score} (max {max_score} reduced by {reduction})", Fore.GREEN)
+                
+                # Step 2: Ambil boosts (jika diperlukan untuk log atau pemrosesan tambahan)
+                boosts_endpoint = f"{self.BASE_URL}hold/boosts"
+                self.log("📡 Fetching boosts...", Fore.CYAN)
+                boosts_response = requests.get(boosts_endpoint, headers=headers)
+                boosts_response.raise_for_status()
+                boosts_data = boosts_response.json()
+                self.log("🎮 Boosts data retrieved.", Fore.GREEN)
+                
+                # Step 3: Siapkan collectedGems secara acak
+                gem_list = [
+                    {"id": 1, "name": "quartz", "rarity": "c", "count": "56", "status": "available", "condition": None},
+                    {"id": 2, "name": "turquoise", "rarity": "c", "count": "57", "status": "available", "condition": None},
+                    {"id": 3, "name": "onyx", "rarity": "c", "count": "75", "status": "available", "condition": None},
+                    {"id": 4, "name": "amethyst", "rarity": "s", "count": "27", "status": "available", "condition": None},
+                    {"id": 5, "name": "topaz", "rarity": "s", "count": "56", "status": "available", "condition": None},
+                    {"id": 6, "name": "opal", "rarity": "r", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-1", "type": "complete-task", "count": 1, "subtype": "wallet"}},
+                    {"id": 7, "name": "ruby", "rarity": "r", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-1", "type": "complete-task", "count": 1, "subtype": "wallet"}},
+                    {"id": 8, "name": "sapphire", "rarity": "er", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-3", "type": "complete-task", "count": 3, "subtype": "wallet"}},
+                    {"id": 9, "name": "emerald", "rarity": "er", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-3", "type": "complete-task", "count": 3, "subtype": "wallet"}},
+                    {"id": 10, "name": "diamond", "rarity": "ur", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-5", "type": "complete-task", "count": 5, "subtype": "wallet"}}
+                ]
+                # Filter gem yang tersedia
+                available_gems = [gem for gem in gem_list if gem["status"] == "available"]
+                # Tentukan jumlah gem yang akan dikumpulkan (misal antara 1 sampai 3)
+                num_gems = random.randint(1, min(3, len(available_gems)))
+                selected_gems = random.sample(available_gems, num_gems)
+                
+                # Buat list collectedGems dengan jumlah masing-masing gem secara acak antara 1 hingga 5
+                collected_gems = [{"gem": gem["name"], "count": random.randint(1, 5)} for gem in selected_gems]
+                
+                # Step 4: Siapkan payload dan kirim hasil game space-tappers
+                payload = {
+                    "score": score,
+                    "collectedGems": collected_gems,
+                    "additionalGame": False,
+                    "additionalLiveBoosts": 0
+                }
+                self.log(f"📡 Sending space tappers result with payload: {payload}", Fore.CYAN)
+                
+                result_endpoint = f"{self.BASE_URL}hold/space-tappers/add-new-result"
+                post_response = requests.post(result_endpoint, headers=headers, json=payload)
+                post_response.raise_for_status()
+                result_data = post_response.json()
+                self.log(f"✅ Space tappers result submitted. Reward: {result_data.get('actualReward')}", Fore.GREEN)
+                
+            except requests.exceptions.RequestException as e:
+                self.log(f"❌ Failed in space tappers game: {e}", Fore.RED)
+                try:
+                    self.log(f"📄 Response content: {settings_response.text}", Fore.RED)
+                except Exception:
+                    pass
+            except Exception as e:
+                self.log(f"❌ Unexpected error in space tappers game: {e}", Fore.RED)
+        
+        # Panggil semua fungsi game: diamond_breath, tap, dan space_tappers
         diamond_breath()
         tap()
+        space_tappers()
 
     def load_proxies(self, filename="proxy.txt"):
         """
@@ -463,24 +531,6 @@ class fintopia:
             requests.put = self.proxy_session.put
             requests.delete = self.proxy_session.delete
 
-            # Save the original WebSocket create_connection if not already saved
-            if not hasattr(self, "_original_websocket_create_connection"):
-                self._original_websocket_create_connection = websocket.create_connection
-
-            # Define a proxy-enabled create_connection wrapper
-            def proxy_create_connection(*args, **kwargs):
-                proxy_url = self.config.get("proxy_url")
-                if proxy_url:
-                    parsed = urlparse(proxy_url)
-                    kwargs["http_proxy_host"] = parsed.hostname
-                    kwargs["http_proxy_port"] = parsed.port
-                    # Optionally support proxy authentication if provided in the proxy URL
-                    if parsed.username and parsed.password:
-                        kwargs["http_proxy_auth"] = f"{parsed.username}:{parsed.password}"
-                return self._original_websocket_create_connection(*args, **kwargs)
-
-            websocket.create_connection = proxy_create_connection
-
         else:
             self.log("[CONFIG] Proxy: ❌ Disabled", Fore.RED)
             # Restore original HTTP request methods if proxy is disabled
@@ -488,10 +538,6 @@ class fintopia:
             requests.post = self._original_requests["post"]
             requests.put = self._original_requests["put"]
             requests.delete = self._original_requests["delete"]
-
-            # Restore the original WebSocket create_connection if it was overridden
-            if hasattr(self, "_original_websocket_create_connection"):
-                websocket.create_connection = self._original_websocket_create_connection
 
 if __name__ == "__main__":
     fin = fintopia()

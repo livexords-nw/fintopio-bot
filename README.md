@@ -22,15 +22,12 @@ This bot is built to save you time and streamline your gameplay, allowing you to
 
 ---
 
-## 🌟 Version 1.0.0
+## 🌟 Version 1.1.0
 
 ### Updates
 
-- **Auto Claim Daily**: Automatically claim your daily rewards.
-- **Auto Farm**: Automatically claim and start farming.
-- **Auto Task**: Automatically complete tasks.
-- **Auto Game**: Automatically play in-game games.
-- **Proxy Support**: Full support for multi-account setups using proxies (optional).
+- **Space Tapper Integration**: Menambahkan space tapper ke dalam task bot.
+- **Proxy System Fix**: Membenahi sistem proxy untuk performa multi-account yang lebih stabil.
 
 ---
 
