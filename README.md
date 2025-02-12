@@ -22,12 +22,12 @@ This bot is built to save you time and streamline your gameplay, allowing you to
 
 ---
 
-## 🌟 Version 1.1.0
+## 🌟 Version 1.2.0
 
 ### Updates
 
-- **Space Tapper Integration**: Menambahkan space tapper ke dalam task bot.
-- **Proxy System Fix**: Membenahi sistem proxy untuk performa multi-account yang lebih stabil.
+- Membenahi sistem task sekarang baru bisa claim task
+- Mengoptimalkan sistem game
 
 ---
 

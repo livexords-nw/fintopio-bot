@@ -182,7 +182,7 @@ class fintopia:
             return False
     
     def task(self) -> None:
-        """Fetches tasks from the server and verifies tasks that are in progress."""
+        """Fetches tasks from the server, verifies tasks in progress, and claims them."""
         tasks_url = f"{self.BASE_URL}hold/tasks"
         headers = {**self.HEADERS}
         init_headers = {**headers, "Authorization": f"Bearer {self.token}"}
@@ -230,6 +230,19 @@ class fintopia:
                         self.log(f"✅ Task {task_id} is verifying.", Fore.GREEN)
                     else:
                         self.log(f"⚠️ Unexpected verification status for task {task_id}: {verify_data}", Fore.YELLOW)
+
+                    # Setelah verifikasi, claim task tersebut
+                    claim_url = f"{self.BASE_URL}hold/tasks/{task_id}/claim"
+                    self.log(f"💰 Claiming task {task_id}...", Fore.CYAN)
+                    claim_response = requests.post(claim_url, headers=init_headers)  # POST tanpa payload
+                    if claim_response.status_code == 201:
+                        claim_data = claim_response.json()
+                        if claim_data.get("status") == "completed":
+                            self.log(f"✅ Task {task_id} claimed successfully.", Fore.GREEN)
+                        else:
+                            self.log(f"⚠️ Unexpected claim response for task {task_id}: {claim_data}", Fore.YELLOW)
+                    else:
+                        self.log(f"❌ Failed to claim task {task_id}. Status code: {claim_response.status_code}", Fore.RED)
 
         except requests.exceptions.RequestException as e:
             self.log(f"❌ Failed to fetch or verify tasks: {e}", Fore.RED)
@@ -316,7 +329,7 @@ class fintopia:
                 game_info = get_response.json()
                 self.log("🎮 Diamond-breath game info retrieved.", Fore.GREEN)
                 
-                delay = random.randint(13, 15)
+                delay = random.randint(13, 25)
                 self.log(f"⏱️ Waiting for {delay} seconds before playing diamond-breath...", Fore.CYAN)
                 time.sleep(delay)
                 
@@ -387,7 +400,7 @@ class fintopia:
                 
                 # Ambil nilai maksimum score dari game settings
                 max_score = game_settings.get("maxScore", 57)
-                # Kurangi nilai max_score secara acak antara 10 hingga 100
+                # Kurangi nilai max_score secara acak antara 10 hingga 50
                 reduction = random.randint(10, 50)
                 score = max_score - reduction
                 self.log(f"🎲 Calculated score: {score} (max {max_score} reduced by {reduction})", Fore.GREEN)
@@ -402,16 +415,10 @@ class fintopia:
                 
                 # Step 3: Siapkan collectedGems secara acak
                 gem_list = [
-                    {"id": 1, "name": "quartz", "rarity": "c", "count": "56", "status": "available", "condition": None},
-                    {"id": 2, "name": "turquoise", "rarity": "c", "count": "57", "status": "available", "condition": None},
-                    {"id": 3, "name": "onyx", "rarity": "c", "count": "75", "status": "available", "condition": None},
                     {"id": 4, "name": "amethyst", "rarity": "s", "count": "27", "status": "available", "condition": None},
                     {"id": 5, "name": "topaz", "rarity": "s", "count": "56", "status": "available", "condition": None},
                     {"id": 6, "name": "opal", "rarity": "r", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-1", "type": "complete-task", "count": 1, "subtype": "wallet"}},
                     {"id": 7, "name": "ruby", "rarity": "r", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-1", "type": "complete-task", "count": 1, "subtype": "wallet"}},
-                    {"id": 8, "name": "sapphire", "rarity": "er", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-3", "type": "complete-task", "count": 3, "subtype": "wallet"}},
-                    {"id": 9, "name": "emerald", "rarity": "er", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-3", "type": "complete-task", "count": 3, "subtype": "wallet"}},
-                    {"id": 10, "name": "diamond", "rarity": "ur", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-5", "type": "complete-task", "count": 5, "subtype": "wallet"}}
                 ]
                 # Filter gem yang tersedia
                 available_gems = [gem for gem in gem_list if gem["status"] == "available"]
