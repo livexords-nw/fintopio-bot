@@ -26,8 +26,8 @@ This bot is built to save you time and streamline your gameplay, allowing you to
 
 ### Updates
 
-- Membenahi sistem task sekarang baru bisa claim task
-- Mengoptimalkan sistem game
+- **Task System Enhancement:** Tasks can now only be claimed after a successful verification, ensuring improved security and integrity.
+- **Game System Optimization:** We've fine-tuned the game system for a smoother performance and a more engaging gameplay experience.
 
 ---
 
