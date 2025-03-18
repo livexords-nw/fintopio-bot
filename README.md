@@ -1,6 +1,6 @@
 ---
 
-<h1 align="center">Fintopia Bot</h1>
+<h1 align="center">Fintopio Bot</h1>
 
 <p align="center">
 Automate tasks in Fintopia to maximize your rewards, farm HP points, and enjoy a seamless gaming experience!
@@ -10,7 +10,7 @@ Automate tasks in Fintopia to maximize your rewards, farm HP points, and enjoy a
 
 ## 🚀 About the Bot
 
-Fintopia Bot is designed to automate various tasks in **Fintopia**, including:
+Fintopio Bot is designed to automate various tasks in **Fintopia**, including:
 
 - **Auto Claim Daily**: Automatically claim your daily rewards.
 - **Auto Farm**: Automatically claim and start farming for extra rewards.
@@ -22,12 +22,11 @@ This bot is built to save you time and streamline your gameplay, allowing you to
 
 ---
 
-## 🌟 Version 1.2.0
+## 🌟 Version 1.2.1
 
 ### Updates
 
-- **Task System Enhancement:** Tasks can now only be claimed after a successful verification, ensuring improved security and integrity.
-- **Game System Optimization:** We've fine-tuned the game system for a smoother performance and a more engaging gameplay experience.
+- **API Game Space Tappers Fix:** The API integration for the Space Tappers game has been fixed to ensure improved reliability and performance.
 
 ---
 
@@ -65,14 +64,14 @@ The bot uses the following configuration:
    Clone the project to your local machine using:
 
    ```bash
-   git clone https://github.com/livexords-nw/fintopia-bot.git
+   git clone https://github.com/livexords-nw/fintopio-bot.git
    ```
 
 2. **Navigate to the Project Folder**  
    Move into the project directory:
 
    ```bash
-   cd fintopia-bot
+   cd fintopio-bot
    ```
 
 3. **Install Dependencies**  

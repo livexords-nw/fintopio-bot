@@ -5,6 +5,7 @@ from colorama import Fore
 import requests
 import random
 
+
 class fintopia:
     BASE_URL = "https://api.fintopio.com/"
     HEADERS = {
@@ -20,7 +21,7 @@ class fintopia:
         "sec-fetch-dest": "empty",
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "cross-site",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
     }
 
     def __init__(self):
@@ -36,7 +37,14 @@ class fintopia:
         self.log("📢 Channel: t.me/livexordsscript\n", Fore.CYAN)
 
     def log(self, message, color=Fore.RESET):
-            print(Fore.LIGHTBLACK_EX + datetime.now().strftime("[%Y:%m:%d ~ %H:%M:%S] |") + " " + color + message + Fore.RESET)
+        print(
+            Fore.LIGHTBLACK_EX
+            + datetime.now().strftime("[%Y:%m:%d ~ %H:%M:%S] |")
+            + " "
+            + color
+            + message
+            + Fore.RESET
+        )
 
     def load_config(self) -> dict:
         """
@@ -54,7 +62,10 @@ class fintopia:
             self.log("❌ File not found: config.json", Fore.RED)
             return {}
         except json.JSONDecodeError:
-            self.log("❌ Failed to parse config.json. Please check the file format.", Fore.RED)
+            self.log(
+                "❌ Failed to parse config.json. Please check the file format.",
+                Fore.RED,
+            )
             return {}
 
     def load_query(self, path_file: str = "query.txt") -> list:
@@ -108,7 +119,7 @@ class fintopia:
             response = requests.get(req_url, headers=headers)
             response.raise_for_status()
             data = response.json()
-            
+
             # Mengambil token dari data respons
             auth_token = data.get("token", None)
             if auth_token:
@@ -132,15 +143,22 @@ class fintopia:
             if balance_info:
                 self.log(f"💰 Balance: {balance_info.get('balance')}", Fore.GREEN)
             else:
-                self.log("⚠️ Balance information not found in init response.", Fore.YELLOW)
+                self.log(
+                    "⚠️ Balance information not found in init response.", Fore.YELLOW
+                )
 
             if profile_info:
                 self.log("👤 Profile Information:", Fore.GREEN)
                 self.log(f"🆔 ID: {profile_info.get('id')}", Fore.GREEN)
                 self.log(f"📝 Name: {profile_info.get('name')}", Fore.GREEN)
-                self.log(f"💬 Telegram Username: {profile_info.get('telegramUsername')}", Fore.GREEN)
+                self.log(
+                    f"💬 Telegram Username: {profile_info.get('telegramUsername')}",
+                    Fore.GREEN,
+                )
             else:
-                self.log("⚠️ Profile information not found in init response.", Fore.YELLOW)
+                self.log(
+                    "⚠️ Profile information not found in init response.", Fore.YELLOW
+                )
 
         except requests.exceptions.RequestException as e:
             self.log(f"❌ Failed to send login request: {e}", Fore.RED)
@@ -164,12 +182,15 @@ class fintopia:
         try:
             self.log("📡 Sending daily check-in request...", Fore.CYAN)
             response = requests.get(daily_url, headers=init_headers)
-            
+
             if response.status_code == 200:
                 self.log("✅ Daily check-in successful!", Fore.GREEN)
                 return True
             else:
-                self.log(f"❌ Daily check-in failed with status code: {response.status_code}", Fore.RED)
+                self.log(
+                    f"❌ Daily check-in failed with status code: {response.status_code}",
+                    Fore.RED,
+                )
                 self.log(f"📄 Response content: {response.text}", Fore.RED)
                 return False
 
@@ -180,7 +201,7 @@ class fintopia:
             except Exception:
                 pass
             return False
-    
+
     def task(self) -> None:
         """Fetches tasks from the server, verifies tasks in progress, and claims them."""
         tasks_url = f"{self.BASE_URL}hold/tasks"
@@ -229,20 +250,33 @@ class fintopia:
                     if verify_data.get("status") == "verifying":
                         self.log(f"✅ Task {task_id} is verifying.", Fore.GREEN)
                     else:
-                        self.log(f"⚠️ Unexpected verification status for task {task_id}: {verify_data}", Fore.YELLOW)
+                        self.log(
+                            f"⚠️ Unexpected verification status for task {task_id}: {verify_data}",
+                            Fore.YELLOW,
+                        )
 
                     # Setelah verifikasi, claim task tersebut
                     claim_url = f"{self.BASE_URL}hold/tasks/{task_id}/claim"
                     self.log(f"💰 Claiming task {task_id}...", Fore.CYAN)
-                    claim_response = requests.post(claim_url, headers=init_headers)  # POST tanpa payload
+                    claim_response = requests.post(
+                        claim_url, headers=init_headers
+                    )  # POST tanpa payload
                     if claim_response.status_code == 201:
                         claim_data = claim_response.json()
                         if claim_data.get("status") == "completed":
-                            self.log(f"✅ Task {task_id} claimed successfully.", Fore.GREEN)
+                            self.log(
+                                f"✅ Task {task_id} claimed successfully.", Fore.GREEN
+                            )
                         else:
-                            self.log(f"⚠️ Unexpected claim response for task {task_id}: {claim_data}", Fore.YELLOW)
+                            self.log(
+                                f"⚠️ Unexpected claim response for task {task_id}: {claim_data}",
+                                Fore.YELLOW,
+                            )
                     else:
-                        self.log(f"❌ Failed to claim task {task_id}. Status code: {claim_response.status_code}", Fore.RED)
+                        self.log(
+                            f"❌ Failed to claim task {task_id}. Status code: {claim_response.status_code}",
+                            Fore.RED,
+                        )
 
         except requests.exceptions.RequestException as e:
             self.log(f"❌ Failed to fetch or verify tasks: {e}", Fore.RED)
@@ -262,7 +296,7 @@ class fintopia:
                 self.log(f"📄 Response content: {response.text}", Fore.RED)
             except Exception:
                 pass
-    
+
     def farm(self) -> None:
         """Claims farming rewards and starts farming."""
         claim_url = f"{self.BASE_URL}farming/claim"
@@ -279,7 +313,10 @@ class fintopia:
             if claim_data.get("state") == "idling":
                 self.log("✅ Farming claim successful. State is idling.", Fore.GREEN)
             else:
-                self.log(f"⚠️ Unexpected farming claim state: {claim_data.get('state')}", Fore.YELLOW)
+                self.log(
+                    f"⚠️ Unexpected farming claim state: {claim_data.get('state')}",
+                    Fore.YELLOW,
+                )
 
             # Langkah 2: Mulai farming
             self.log("🚜 Starting farming...", Fore.CYAN)
@@ -299,7 +336,9 @@ class fintopia:
                     self.log(f"⏰ Farming will finish at: {finish}", Fore.GREEN)
                     self.log(f"⏱️ Time left: {left}", Fore.GREEN)
             else:
-                self.log(f"⚠️ Unexpected farming state: {farm_data.get('state')}", Fore.YELLOW)
+                self.log(
+                    f"⚠️ Unexpected farming state: {farm_data.get('state')}", Fore.YELLOW
+                )
 
         except requests.exceptions.RequestException as e:
             self.log(f"❌ Failed to perform farming: {e}", Fore.RED)
@@ -316,23 +355,26 @@ class fintopia:
 
     def game(self) -> None:
         """Handles game related functions."""
-        
+
         def diamond_breath() -> None:
             """Plays the diamond-breath game."""
             endpoint = f"{self.BASE_URL}games/diamond-breath"
             headers = {**self.HEADERS, "Authorization": f"Bearer {self.token}"}
-            
+
             try:
                 self.log("📡 Fetching diamond-breath game info...", Fore.CYAN)
                 get_response = requests.get(endpoint, headers=headers)
                 get_response.raise_for_status()
                 game_info = get_response.json()
                 self.log("🎮 Diamond-breath game info retrieved.", Fore.GREEN)
-                
+
                 delay = random.randint(13, 25)
-                self.log(f"⏱️ Waiting for {delay} seconds before playing diamond-breath...", Fore.CYAN)
+                self.log(
+                    f"⏱️ Waiting for {delay} seconds before playing diamond-breath...",
+                    Fore.CYAN,
+                )
                 time.sleep(delay)
-                
+
                 payload = {"seconds": delay}
                 self.log("📡 Sending diamond-breath play request...", Fore.CYAN)
                 post_response = requests.post(endpoint, headers=headers, json=payload)
@@ -340,7 +382,7 @@ class fintopia:
                 play_result = post_response.json()
                 reward = play_result.get("reward")
                 self.log(f"✅ Diamond-breath played. Reward: {reward}", Fore.GREEN)
-                
+
             except requests.exceptions.RequestException as e:
                 self.log(f"❌ Failed to play diamond-breath: {e}", Fore.RED)
                 try:
@@ -349,33 +391,35 @@ class fintopia:
                     pass
             except Exception as e:
                 self.log(f"❌ Unexpected error in diamond-breath: {e}", Fore.RED)
-        
+
         def tap() -> None:
             """Plays the tap game."""
             state_endpoint = f"{self.BASE_URL}clicker/diamond/state"
             complete_endpoint = f"{self.BASE_URL}clicker/diamond/complete"
             headers = {**self.HEADERS, "Authorization": f"Bearer {self.token}"}
-            
+
             try:
                 self.log("📡 Fetching clicker diamond state...", Fore.CYAN)
                 state_response = requests.get(state_endpoint, headers=headers)
                 state_response.raise_for_status()
                 state_data = state_response.json()
                 self.log("🎮 Diamond state fetched.", Fore.GREEN)
-                
+
                 state_str = state_data.get("state", "unknown")
                 clicks = state_data.get("clicks", "N/A")
                 self.log(f"🆙 State: {state_str} | 👆 Clicks: {clicks}", Fore.GREEN)
-                
+
                 delay = random.randint(4, 8)
-                self.log(f"⏱️ Waiting for {delay} seconds before completing tap...", Fore.CYAN)
+                self.log(
+                    f"⏱️ Waiting for {delay} seconds before completing tap...", Fore.CYAN
+                )
                 time.sleep(delay)
-                
+
                 self.log("📡 Sending tap complete request...", Fore.CYAN)
                 complete_response = requests.post(complete_endpoint, headers=headers)
                 complete_response.raise_for_status()
                 self.log("✅ Tap completed successfully!", Fore.GREEN)
-                
+
             except requests.exceptions.RequestException as e:
                 self.log(f"❌ Failed to complete tap game: {e}", Fore.RED)
                 try:
@@ -384,11 +428,11 @@ class fintopia:
                     pass
             except Exception as e:
                 self.log(f"❌ Unexpected error in tap game: {e}", Fore.RED)
-        
+
         def space_tappers() -> None:
             """Plays the space tappers game."""
             headers = {**self.HEADERS, "Authorization": f"Bearer {self.token}"}
-            
+
             try:
                 # Step 1: Ambil pengaturan game space-tappers
                 settings_endpoint = f"{self.BASE_URL}hold/space-tappers/game-settings"
@@ -396,15 +440,20 @@ class fintopia:
                 settings_response = requests.get(settings_endpoint, headers=headers)
                 settings_response.raise_for_status()
                 game_settings = settings_response.json()
-                self.log(f"🎮 Space tappers settings retrieved: {game_settings}", Fore.GREEN)
-                
+                self.log(
+                    f"🎮 Space tappers settings retrieved: {game_settings}", Fore.GREEN
+                )
+
                 # Ambil nilai maksimum score dari game settings
                 max_score = game_settings.get("maxScore", 57)
                 # Kurangi nilai max_score secara acak antara 10 hingga 50
                 reduction = random.randint(10, 50)
                 score = max_score - reduction
-                self.log(f"🎲 Calculated score: {score} (max {max_score} reduced by {reduction})", Fore.GREEN)
-                
+                self.log(
+                    f"🎲 Calculated score: {score} (max {max_score} reduced by {reduction})",
+                    Fore.GREEN,
+                )
+
                 # Step 2: Ambil boosts (jika diperlukan untuk log atau pemrosesan tambahan)
                 boosts_endpoint = f"{self.BASE_URL}hold/boosts"
                 self.log("📡 Fetching boosts...", Fore.CYAN)
@@ -412,38 +461,91 @@ class fintopia:
                 boosts_response.raise_for_status()
                 boosts_data = boosts_response.json()
                 self.log("🎮 Boosts data retrieved.", Fore.GREEN)
-                
+
                 # Step 3: Siapkan collectedGems secara acak
                 gem_list = [
-                    {"id": 4, "name": "amethyst", "rarity": "s", "count": "27", "status": "available", "condition": None},
-                    {"id": 5, "name": "topaz", "rarity": "s", "count": "56", "status": "available", "condition": None},
-                    {"id": 6, "name": "opal", "rarity": "r", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-1", "type": "complete-task", "count": 1, "subtype": "wallet"}},
-                    {"id": 7, "name": "ruby", "rarity": "r", "count": "0", "status": "unavailable", "condition": {"key": "completed-wallet-task-1", "type": "complete-task", "count": 1, "subtype": "wallet"}},
+                    {
+                        "id": 4,
+                        "name": "amethyst",
+                        "rarity": "s",
+                        "count": "27",
+                        "status": "available",
+                        "condition": None,
+                    },
+                    {
+                        "id": 5,
+                        "name": "topaz",
+                        "rarity": "s",
+                        "count": "56",
+                        "status": "available",
+                        "condition": None,
+                    },
+                    {
+                        "id": 6,
+                        "name": "opal",
+                        "rarity": "r",
+                        "count": "0",
+                        "status": "unavailable",
+                        "condition": {
+                            "key": "completed-wallet-task-1",
+                            "type": "complete-task",
+                            "count": 1,
+                            "subtype": "wallet",
+                        },
+                    },
+                    {
+                        "id": 7,
+                        "name": "ruby",
+                        "rarity": "r",
+                        "count": "0",
+                        "status": "unavailable",
+                        "condition": {
+                            "key": "completed-wallet-task-1",
+                            "type": "complete-task",
+                            "count": 1,
+                            "subtype": "wallet",
+                        },
+                    },
                 ]
                 # Filter gem yang tersedia
-                available_gems = [gem for gem in gem_list if gem["status"] == "available"]
+                available_gems = [
+                    gem for gem in gem_list if gem["status"] == "available"
+                ]
                 # Tentukan jumlah gem yang akan dikumpulkan (misal antara 1 sampai 3)
                 num_gems = random.randint(1, min(3, len(available_gems)))
                 selected_gems = random.sample(available_gems, num_gems)
-                
+
                 # Buat list collectedGems dengan jumlah masing-masing gem secara acak antara 1 hingga 5
-                collected_gems = [{"gem": gem["name"], "count": random.randint(1, 5)} for gem in selected_gems]
-                
+                collected_gems = [
+                    {"gem": gem["name"], "count": random.randint(1, 5)}
+                    for gem in selected_gems
+                ]
+
                 # Step 4: Siapkan payload dan kirim hasil game space-tappers
                 payload = {
                     "score": score,
                     "collectedGems": collected_gems,
                     "additionalGame": False,
-                    "additionalLiveBoosts": 0
+                    "additionalLiveBoosts": 0,
+                    "rocketSkins": [],
+                    "holdPoints": score + random.randint(20, 40),
                 }
-                self.log(f"📡 Sending space tappers result with payload: {payload}", Fore.CYAN)
-                
+                self.log(
+                    f"📡 Sending space tappers result with payload: {payload}",
+                    Fore.CYAN,
+                )
+
                 result_endpoint = f"{self.BASE_URL}hold/space-tappers/add-new-result"
-                post_response = requests.post(result_endpoint, headers=headers, json=payload)
+                post_response = requests.post(
+                    result_endpoint, headers=headers, json=payload
+                )
                 post_response.raise_for_status()
                 result_data = post_response.json()
-                self.log(f"✅ Space tappers result submitted. Reward: {result_data.get('actualReward')}", Fore.GREEN)
-                
+                self.log(
+                    f"✅ Space tappers result submitted. Reward: {result_data.get('actualReward')}",
+                    Fore.GREEN,
+                )
+
             except requests.exceptions.RequestException as e:
                 self.log(f"❌ Failed in space tappers game: {e}", Fore.RED)
                 try:
@@ -452,7 +554,7 @@ class fintopia:
                     pass
             except Exception as e:
                 self.log(f"❌ Unexpected error in space tappers game: {e}", Fore.RED)
-        
+
         # Panggil semua fungsi game: diamond_breath, tap, dan space_tappers
         diamond_breath()
         tap()
@@ -461,10 +563,10 @@ class fintopia:
     def load_proxies(self, filename="proxy.txt"):
         """
         Reads proxies from a file and returns them as a list.
-        
+
         Args:
             filename (str): The path to the proxy file.
-        
+
         Returns:
             list: A list of proxy addresses.
         """
@@ -481,14 +583,14 @@ class fintopia:
     def set_proxy_session(self, proxies: list) -> requests.Session:
         """
         Creates a requests session with a working proxy from the given list.
-        
+
         If a chosen proxy fails the connectivity test, it will try another proxy
         until a working one is found. If no proxies work or the list is empty, it
         will return a session with a direct connection.
 
         Args:
             proxies (list): A list of proxy addresses (e.g., "http://proxy_address:port").
-        
+
         Returns:
             requests.Session: A session object configured with a working proxy,
                             or a direct connection if none are available.
@@ -512,18 +614,20 @@ class fintopia:
                 response = self.proxy_session.get(test_url, timeout=5)
                 response.raise_for_status()
                 origin_ip = response.json().get("origin", "Unknown IP")
-                self.log(f"✅ Using Proxy: {proxy_url} | Your IP: {origin_ip}", Fore.GREEN)
+                self.log(
+                    f"✅ Using Proxy: {proxy_url} | Your IP: {origin_ip}", Fore.GREEN
+                )
                 return self.proxy_session
             except requests.RequestException as e:
                 self.log(f"❌ Proxy failed: {proxy_url} | Error: {e}", Fore.RED)
                 # Remove the failed proxy and try again.
                 available_proxies.remove(proxy_url)
-        
+
         # If none of the proxies worked, use a direct connection.
         self.log("⚠️ All proxies failed. Using direct connection.", Fore.YELLOW)
         self.proxy_session = requests.Session()
         return self.proxy_session
-    
+
     def override_requests(self):
         """Override requests and WebSocket functions globally when proxy is enabled."""
 
@@ -546,6 +650,7 @@ class fintopia:
             requests.put = self._original_requests["put"]
             requests.delete = self._original_requests["delete"]
 
+
 if __name__ == "__main__":
     fin = fintopia()
     index = 0
@@ -554,14 +659,23 @@ if __name__ == "__main__":
     if config.get("proxy", False):
         proxies = fin.load_proxies()
 
-    fin.log("🎉 [LIVEXORDS] === Welcome to fintopia Automation === [LIVEXORDS]", Fore.YELLOW)
+    fin.log(
+        "🎉 [LIVEXORDS] === Welcome to fintopia Automation === [LIVEXORDS]", Fore.YELLOW
+    )
     fin.log(f"📂 Loaded {max_index} accounts from query list.", Fore.YELLOW)
 
     while True:
         current_account = fin.query_list[index]
-        display_account = current_account[:10] + "..." if len(current_account) > 10 else current_account
+        display_account = (
+            current_account[:10] + "..."
+            if len(current_account) > 10
+            else current_account
+        )
 
-        fin.log(f"👤 [ACCOUNT] Processing account {index + 1}/{max_index}: {display_account}", Fore.YELLOW)
+        fin.log(
+            f"👤 [ACCOUNT] Processing account {index + 1}/{max_index}: {display_account}",
+            Fore.YELLOW,
+        )
 
         if config.get("proxy", False):
             fin.override_requests()
@@ -575,12 +689,15 @@ if __name__ == "__main__":
             "daily": "🌞 Daily Check-In: Automatically claim your daily rewards and bonuses.",
             "task": "📝 Task Automation: Effortlessly complete tasks to earn bonus rewards.",
             "farm": "🌾 Farming: Auto claim and initiate farming operations to harvest extra resources.",
-            "game": "🎮 Game Automation: Engage in automatic gameplay to maximize your in-game earnings."
+            "game": "🎮 Game Automation: Engage in automatic gameplay to maximize your in-game earnings.",
         }
 
         for task_key, task_name in tasks.items():
             task_status = config.get(task_key, False)
-            fin.log(f"[CONFIG] {task_name}: {'✅ Enabled' if task_status else '❌ Disabled'}", Fore.YELLOW if task_status else Fore.RED)
+            fin.log(
+                f"[CONFIG] {task_name}: {'✅ Enabled' if task_status else '❌ Disabled'}",
+                Fore.YELLOW if task_status else Fore.RED,
+            )
 
             if task_status:
                 fin.log(f"🔄 Executing {task_name}...")
@@ -588,10 +705,14 @@ if __name__ == "__main__":
 
         if index == max_index - 1:
             fin.log("🔁 All accounts processed. Restarting loop.")
-            fin.log(f"⏳ Sleeping for {config.get('delay_loop', 30)} seconds before restarting.")
+            fin.log(
+                f"⏳ Sleeping for {config.get('delay_loop', 30)} seconds before restarting."
+            )
             time.sleep(config.get("delay_loop", 30))
             index = 0
         else:
-            fin.log(f"➡️ Switching to the next account in {config.get('delay_account_switch', 10)} seconds.")
+            fin.log(
+                f"➡️ Switching to the next account in {config.get('delay_account_switch', 10)} seconds."
+            )
             time.sleep(config.get("delay_account_switch", 10))
             index += 1
